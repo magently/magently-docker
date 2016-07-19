@@ -30,13 +30,15 @@ fi
 export HOST_USER
 export HOST_GROUP
 export APP_PATH=/app
-export DOCROOT_PATH=/var/www/html
+export DOCROOT_PATH=/var/www/htdocs
 export SAVE_PATH=/tmp/html.save
 
 chown -R "$HOST_USER":"$HOST_GROUP" "$DOCROOT_PATH"
 
 # Create htdocs.save
 [ -e "$SAVE_PATH" ] || gosu "$HOST_USER" mkdir "$SAVE_PATH"
+
+chown -R "$HOST_USER":"$HOST_GROUP" "$DOCROOT_PATH"
 
 gosu "$HOST_USER" /scripts/revert-app-symlinks.sh
 gosu "$HOST_USER" /scripts/create-app-symlinks.sh
@@ -50,4 +52,3 @@ case "$@" in
   "")                               ;;
   *)                      exec gosu "$HOST_USER" "$@" ;;
 esac
-

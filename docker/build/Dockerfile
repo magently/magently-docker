@@ -1,4 +1,4 @@
-FROM php:5-apache
+FROM alexcheng/magento
 
 # Install Ant, Git, wget
 RUN apt-get update \
@@ -51,11 +51,7 @@ RUN apt-get update && apt-get install -y inotify-tools
 RUN ["apt-get", "clean"]
 RUN ["rm", "-rf", "/var/lib/apt/lists/*", "/tmp/*", "/var/tmp/*"]
 
-# Prepare apache
-RUN a2enmod rewrite
-RUN sed -i "s/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/html\/public/" /etc/apache2/sites-available/000-default.conf
-
-WORKDIR /var/www/html
+WORKDIR /app
 
 COPY ./docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
