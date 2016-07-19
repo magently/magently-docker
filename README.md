@@ -12,15 +12,17 @@ Do uruchomienia środowiska niezbędna jest wyłącznie instalacja [Dockera](htt
 
 1. Pobierz archiwum ZIP i rozpakuj je w głównym katalogu projektu
 2. Zaaktualizuj konfiguracje projektu:
-...Baza danych:
-...- host: db
-...- port: 3306
-...- user: root
-...- pass: secret
+
+   Baza danych:
+   - host: db
+   - port: 3306
+   - user: root
+   - pass: secret
 3. Utwórz plik .env na bazie pliku .env.example
 4. Nadaj odpowiednie uprawnienia plików:
-...`$ find <ścieżka-do-projektu> -type f -exec chmod 664 {} \;`
-...`$ find <ścieżka-do-projektu> -type d -exec chmod 775,g+s {} \;`
+
+   `$ find <ścieżka-do-projektu> -type f -exec chmod 664 {} \;`
+   `$ find <ścieżka-do-projektu> -type d -exec chmod 775,g+s {} \;`
      
 ## Uruchomienie Dockera (zalecane)
 
