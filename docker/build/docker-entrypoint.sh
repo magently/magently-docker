@@ -43,10 +43,6 @@ chown -R "$HOST_USER":"$HOST_GROUP" "$DOCROOT_PATH"
 gosu "$HOST_USER" /scripts/revert-app-symlinks.sh
 gosu "$HOST_USER" /scripts/create-app-symlinks.sh
 
-chown -R "$HOST_USER":"$HOST_GROUP" /var/www/htdocs
-
-gosu "$HOST_USER" /scripts/create-app-symlinks.sh .
-
 case "$@" in
   "bash")                 exec "$@" ;;
   "/bin/bash")            exec "$@" ;;

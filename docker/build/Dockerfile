@@ -1,4 +1,4 @@
-FROM alexcheng/magento
+FROM alexcheng/magento2
 
 # Install Ant, Git, wget
 RUN apt-get update \
