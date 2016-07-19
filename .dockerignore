@@ -1,0 +1,6 @@
+.git
+bower_components
+node_modules
+.sass-cache
+vendor
+.vagrant

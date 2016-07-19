@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+  # MySQL container
+  db:
+#    volumes:
+#      - ./resources/dumps/local.sql:/docker-entrypoint-initdb.d/local.sql
+
+  # App container
+  app:
+    command: ["/usr/bin/supervisord"]

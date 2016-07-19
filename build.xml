@@ -1,0 +1,43 @@
+<project name="magento" default="build">
+
+  <target name="install-npm">
+    <echo>Installing npm...</echo>
+    <exec executable="npm" failonerror="true">
+      <arg line="install" />
+    </exec>
+    <echo>Installing npm... Done</echo>
+  </target>
+
+  <target name="install" depends="install-npm">
+    <echo>Installing...</echo>
+    <exec executable="grunt" failonerror="true">
+      <arg line="--no-color install" />
+    </exec>
+    <echo>Installing... Done</echo>
+  </target>
+
+  <target name="test" depends="install-npm">
+    <echo>Testing...</echo>
+    <exec executable="grunt" failonerror="true">
+      <arg line="--no-color test" />
+    </exec>
+    <echo>Testing... Done</echo>
+  </target>
+
+  <target name="build" depends="install-npm">
+    <echo>Building...</echo>
+    <exec executable="grunt" failonerror="true">
+      <arg line="--no-color build" />
+    </exec>
+    <echo>Building... Done</echo>
+  </target>
+
+  <target name="work" depends="install-npm">
+    <echo>Working...</echo>
+    <exec executable="grunt" failonerror="true">
+      <arg line="--no-color" />
+    </exec>
+    <echo>Working... Done</echo>
+  </target>
+
+</project>
