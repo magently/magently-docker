@@ -1,16 +1,5 @@
 FROM php:5-apache
 
-# Install common PHP extensions
-RUN apt-get update && apt-get install -y \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libmcrypt-dev \
-        libpng12-dev \
-        libxml2-dev \
-    && docker-php-ext-install -j$(nproc) iconv mcrypt soap mysqli pdo_mysql \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd
-
 # Install Ant, Git, wget
 RUN apt-get update \
   && apt-get install -y ant git wget zip
@@ -55,7 +44,8 @@ RUN npm install -g bower
 RUN apt-get update && apt-get install -y openssh-server apache2 supervisor
 RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/run/sshd /var/log/supervisor
 
-COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# Install inotify-tools
+RUN apt-get update && apt-get install -y inotify-tools
 
 # Clean up
 RUN ["apt-get", "clean"]
@@ -70,3 +60,7 @@ WORKDIR /var/www/html
 COPY ./docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 #CMD ["/usr/bin/supervisord"]
+
+COPY ./scripts /scripts
+
+COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
