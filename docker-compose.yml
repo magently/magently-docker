@@ -31,3 +31,4 @@ services:
       - COMPOSER_HOME=/.composer
       - NPM_CONFIG_CACHE=/.npm
       - BOWER_STORAGE__PACKAGES=/.cache/bower
+      - SYNC_DIRS

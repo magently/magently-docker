@@ -29,8 +29,8 @@ fi
 
 export HOST_USER
 export HOST_GROUP
-export APP_PATH=/app
-export DOCROOT_PATH=/var/www/htdocs
+export APP_PATH="/app$(echo "$SYNC_DIRS" | cut -d: -f1)"
+export DOCROOT_PATH="$(echo "$SYNC_DIRS" | cut -d: -f2)"
 export SAVE_PATH=/tmp/html.save
 
 chown -R "$HOST_USER":"$HOST_GROUP" "$DOCROOT_PATH"
