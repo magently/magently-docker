@@ -1,40 +1,29 @@
 <project name="magento" default="build">
 
-  <target name="install-npm">
-    <echo>Installing npm...</echo>
-    <exec executable="npm" failonerror="true">
-      <arg line="install" />
-    </exec>
-    <echo>Installing npm... Done</echo>
-  </target>
+  <property name="app_dir" value="./" />
 
-  <target name="install" depends="install-npm">
+  <target name="install">
     <echo>Installing...</echo>
-    <exec executable="grunt" failonerror="true">
-      <arg line="--no-color install" />
+    <exec executable="npm" failonerror="true" dir="${app_dir}">
+      <arg line="install ." />
+    </exec>
+    <exec executable="composer" failonerror="true" dir="${app_dir}">
+      <arg line="install" />
     </exec>
     <echo>Installing... Done</echo>
   </target>
 
-  <target name="test" depends="install-npm">
-    <echo>Testing...</echo>
-    <exec executable="grunt" failonerror="true">
-      <arg line="--no-color test" />
-    </exec>
-    <echo>Testing... Done</echo>
-  </target>
-
-  <target name="build" depends="install-npm">
+  <target name="build" depends="install">
     <echo>Building...</echo>
-    <exec executable="grunt" failonerror="true">
-      <arg line="--no-color build" />
+    <exec executable="npm" failonerror="true" dir="${app_dir}">
+      <arg line="--no-color run build" />
     </exec>
     <echo>Building... Done</echo>
   </target>
 
-  <target name="work" depends="install-npm">
+  <target name="work" depends="install">
     <echo>Working...</echo>
-    <exec executable="grunt" failonerror="true">
+    <exec executable="grunt" failonerror="true"  dir="${app_dir}">
       <arg line="--no-color" />
     </exec>
     <echo>Working... Done</echo>
