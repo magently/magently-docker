@@ -1,4 +1,15 @@
-FROM alexcheng/magento2
+FROM php:5-apache
+
+# Install common PHP extensions
+RUN apt-get update && apt-get install -y \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libmcrypt-dev \
+        libpng12-dev \
+        libxml2-dev \
+    && docker-php-ext-install -j$(nproc) iconv mcrypt soap mysqli pdo_mysql \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) gd
 
 # Install Ant, Git, wget
 RUN apt-get update \
@@ -27,36 +38,59 @@ RUN apt-get update \
   && npm update -g npm \
   && npm install -g grunt-cli
 
-# Install locales
-RUN apt-get update \
-    && apt-get install -y locales \
-    && localedef -i en_US -f UTF-8 en_US.UTF-8
+# Install magento PHP extensions
+RUN apt-get update && apt-get -y install \
+    libxslt1-dev \
+    libicu-dev \
+    mysql-client \
+    libmysqlclient-dev \
+    && docker-php-ext-configure zip --enable-zip \
+    && docker-php-ext-install intl mbstring xsl zip
 
-# Install ruby
-RUN apt-get update \
-    && apt-get install -y ruby ruby-dev \
-    && gem install compass
+# Install tools
+RUN apt-get update && apt-get install -y \
+    inotify-tools \
+    locales \
+    cron \
+    supervisor \
+  && localedef -i en_US -f UTF-8 en_US.UTF-8
 
-# Install bower
-RUN npm install -g bower
+# Install xdebug
+RUN pecl install xdebug && docker-php-ext-enable xdebug
 
-# Enable supervisord
-RUN apt-get update && apt-get install -y openssh-server apache2 supervisor
-RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/run/sshd /var/log/supervisor
-
-# Install inotify-tools
-RUN apt-get update && apt-get install -y inotify-tools
+# Install dockerize
+ENV DOCKERIZE_VERSION v0.2.0
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 # Clean up
 RUN ["apt-get", "clean"]
 RUN ["rm", "-rf", "/var/lib/apt/lists/*", "/tmp/*", "/var/tmp/*"]
 
+# Activate mod_rewrite
+RUN a2enmod rewrite
+
+# Set umask to 002
+RUN echo "session optional pam_umask.so" >> /etc/pam.d/common-session \
+  && sed -i "s/UMASK\s\+022/UMASK   002/" /etc/login.defs
+
+# Set memory limit
+RUN echo "memory_limit=1024M" > /usr/local/etc/php/conf.d/memory-limit.ini
+
+# Set workdir
 WORKDIR /app
 
+# Set up entrypoint
 COPY ./docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
-#CMD ["/usr/bin/supervisord"]
 
+# Copy scripts
 COPY ./scripts /scripts
 
+# Set up supervisord
 COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Install crontab
+COPY ./magento-cron /tmp/magento-cron
+RUN cat /tmp/magento-cron | crontab - \
+  && rm /tmp/magento-cron

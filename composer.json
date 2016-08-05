@@ -1,0 +1,34 @@
+{
+    "name": "doofinder/doofinder-magento2-environment",
+    "description": "Environment for Doofinder module for Magento 2",
+    "require": {
+        "php": "~5.5.0|~5.6.0|~7.0.0"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "*",
+        "phpmd/phpmd": "@stable",
+        "phpunit/phpcov": "^2.0",
+        "sebastian/phpcpd": "^2.0"
+    },
+    "scripts": {
+        "post-install-cmd": "./vendor/bin/phpcs --config-set ignore_errors_on_exit 1 && ./vendor/bin/phpcs --config-set ignore_warnings_on_exit 1",
+        "build": [
+            "@phpcs",
+            "@phpmd",
+            "@phpcpd",
+            "@phpunit"
+        ],
+        "phpcs": "php ./vendor/bin/phpcs --standard=phpcs.ruleset.xml --extensions=php,phtml --report=checkstyle --report-file=./reports/phpcs.checkstyle.xml ./module",
+        "phpmd": "php ./vendor/bin/phpmd ./module xml phpmd.ruleset.xml --reportfile ./reports/phpmd.pmd.xml || [ $? -eq 2 ]",
+        "phpcpd": "php ./vendor/bin/phpcpd --log-pmd=./reports/phpcpd.cpd.xml --min-tokens=50 --min-lines=5 -n -q ./module || true",
+        "phpunit": [
+            "mkdir ./reports/coverage || true",
+            "@phpunit:unit",
+            "@phpunit:integration",
+            "@phpunit:cov"
+        ],
+        "phpunit:unit": "cd $MAGENTO_PATH/dev/tests/unit && php ../../../vendor/bin/phpunit --coverage-php $APP_PATH/reports/coverage/unit.cov --log-junit $APP_PATH/reports/phpunit.junit.xml || true",
+        "phpunit:integration": "cd $MAGENTO_PATH/dev/tests/integration && php ../../../vendor/bin/phpunit --coverage-php $APP_PATH/reports/coverage/integration.cov --log-junit $APP_PATH/reports/phpunit.integration.junit.xml || true",
+        "phpunit:cov": "php ./vendor/bin/phpcov merge ./reports/coverage --clover ./reports/clover.xml"
+    }
+}

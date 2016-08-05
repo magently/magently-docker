@@ -1,0 +1,6 @@
+/composer.lock
+/.vagrant
+/.env
+/vendor
+/node_modules
+/reports

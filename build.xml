@@ -1,13 +1,13 @@
 <project name="magento" default="build">
 
-  <property name="app_dir" value="./" />
+  <property environment="env"/>
 
   <target name="install">
     <echo>Installing...</echo>
-    <exec executable="npm" failonerror="true" dir="${app_dir}">
+    <exec executable="npm" failonerror="true">
       <arg line="install ." />
     </exec>
-    <exec executable="composer" failonerror="true" dir="${app_dir}">
+    <exec executable="composer" failonerror="true">
       <arg line="install" />
     </exec>
     <echo>Installing... Done</echo>
@@ -15,17 +15,17 @@
 
   <target name="build" depends="install">
     <echo>Building...</echo>
-    <exec executable="npm" failonerror="true" dir="${app_dir}">
+    <exec executable="npm" failonerror="true">
       <arg line="--no-color run build" />
+    </exec>
+    <exec executable="composer" failonerror="true">
+      <arg line="run-script --dev build" />
     </exec>
     <echo>Building... Done</echo>
   </target>
 
   <target name="work" depends="install">
     <echo>Working...</echo>
-    <exec executable="grunt" failonerror="true"  dir="${app_dir}">
-      <arg line="--no-color" />
-    </exec>
     <echo>Working... Done</echo>
   </target>
 

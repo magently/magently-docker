@@ -6,9 +6,9 @@ set -e
 ##
 function revert_app_symlinks()
 {
-	if [ -h "$DOCROOT_PATH/$1" ] && [[ "$(readlink -m "$DOCROOT_PATH/$1")" == "$APP_PATH"* ]]; then
-		rm "$DOCROOT_PATH/$1"
-		[ ! -e "$SAVE_PATH/$1" ] || mv "$SAVE_PATH/$1" "$DOCROOT_PATH/$1"
+	if [ -h "$SYNC_DEST/$1" ] && [[ "$(readlink -m "$SYNC_DEST/$1")" == "$SYNC_SRC"* ]]; then
+		rm "$SYNC_DEST/$1"
+		[ ! -e "$SAVE_PATH/$1" ] || mv "$SAVE_PATH/$1" "$SYNC_DEST/$1"
 		[ ! -e "$SAVE_PATH/$1.fake" ] || rm "$SAVE_PATH/$1.fake"
 	elif [ -d "$SAVE_PATH/$1" ]; then
 		for FILE in $(ls -1a "$SAVE_PATH/$1" | grep -vP "^\.{1,2}$"); do

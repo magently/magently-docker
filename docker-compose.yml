@@ -6,6 +6,9 @@ services:
     image: mysql:5.6
     environment:
       MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: db
+    volumes:
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   # Build container
   build:
@@ -19,7 +22,6 @@ services:
       - db
     depends_on:
       - db
-      - build
     ports:
       - ${EXTERNAL_HTTP_PORT}80
     volumes:
@@ -31,4 +33,6 @@ services:
       - COMPOSER_HOME=/.composer
       - NPM_CONFIG_CACHE=/.npm
       - BOWER_STORAGE__PACKAGES=/.cache/bower
-      - SYNC_DIRS
+      - COMPOSER_AUTH
+    env_file:
+      - .env

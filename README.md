@@ -11,19 +11,45 @@ Do uruchomienia środowiska niezbędna jest wyłącznie instalacja [Dockera](htt
 ## Instalacja
 
 1. Pobierz archiwum ZIP i rozpakuj je w głównym katalogu projektu
-2. Zaaktualizuj konfiguracje projektu:
+2. Przystosuj konfiguracje projektu:
 
    Baza danych:
-   - host: db
-   - port: 3306
-   - user: root
-   - pass: secret
+   - host: db		[$MYSQL_HOST]
+   - user: root		[$MYSQL_USER]
+   - pass: secret	[$MYSQL_PASSWORD]
+   - db:   db		[$MYSQL_DATABASE]
+
+   Dane dostępowe do bazy danych znajdują się w zmiennych środowiskowych, jeśli projekt je obsługuje wykorzystaj je do konfiguracji połączenia z bazą danych.
 3. Utwórz plik .env na bazie pliku .env.example
 4. Nadaj odpowiednie uprawnienia plików:
 
    `$ find <ścieżka-do-projektu> -type f -exec chmod 664 {} \;`
 
    `$ find <ścieżka-do-projektu> -type d -exec chmod 775,g+s {} \;`
+5. Upewnij się, że następujące katalogi mają tego samego właściciela i grupę:
+   
+   - ./             (Katalog projektu)
+   - ~/.composer
+   - ~/.npm
+   - ~/.cache/bower
+
+   Jest to niezbędne by uniknąć problemów z instalacją.
+6. Skonfiguruj uprawnienia do repozytorium Magento 2:
+
+   W pliku ~/.composer/auth.json powinna znaleźć się następująca konfiguracja:
+
+   `
+   {
+       "http-basic": {
+           "repo.magento.com": {
+               "username": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+               "password": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+           }
+       }
+   }
+   `
+
+   Klucze można uzyskać korzystając z instrukcji dostępnej [tutaj](http://devdocs.magento.com/guides/v2.0/install-gde/prereq/connect-auth.html)
      
 ## Uruchomienie Dockera (zalecane)
 
